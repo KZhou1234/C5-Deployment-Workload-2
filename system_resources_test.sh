@@ -2,7 +2,7 @@
 
 
 CPU_Threshold=65
-Mem_Threshold=85
+Mem_Threshold=95
 Disk_Threshold=65
 
 CPU_Usage=$(top -bn2 | grep "Cpu(s)" | tail -1 | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100-$1}')
