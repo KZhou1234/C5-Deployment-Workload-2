@@ -7,9 +7,9 @@ Be sure to document each step in the process and explain WHY each step is import
 
 ## Instructions
 
-1. Clone this repo to your GitHub account
+1. :white_check_mark:Clone this repo to your GitHub account 
 
-2. Create AWS Access Keys:
+2. :white_check_mark:Create AWS Access Keys:
 
    a. Navigate to the AWS servce: IAM (search for this in the AWS console)
 
@@ -30,7 +30,8 @@ Be sure to document each step in the process and explain WHY each step is import
 NOTE: What are access keys and why would sharing them be dangerous? 
 
 
-3. Create a t2.micro EC2 for your Jenkins Server (IMPORTANT: include ALL commands from Workload 1 step 3b to do so)
+3. :white_check_mark:Create a t2.micro EC2 for your Jenkins Server (IMPORTANT: include ALL commands from Workload 1 step 3b to do so) ![image](https://github.com/user-attachments/assets/b5a10ffb-395e-4939-a727-41380e5ad5ba)
+
 
 4. Create a BASH script called "system_resources_test.sh" that checks for system resources (can be memory, cpu, disk, all of the above and/or more) and push it to the GH repo. IMPORTANT: make sure you use conditional statements and exit codes (0 or 1) if any resource exceeds a certain threshold.
 
