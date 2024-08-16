@@ -1,12 +1,15 @@
 # Kura Labs Cohort 5- Deployment Workload 2
 ## CICD with AWS CLI:  
 
-Previously, we built and tested the application successfully in Jenkins, but we needed to manually upload the code for deployment and configure Elastic Beanstalk in the AWS console. It was very easy to make mistakes when manually releasing the code to production, and it actually happened to me. In this exercise, the goal is to automate the deployment process in Jenkins.
+Previously, we built and tested the application successfully in Jenkins, but we needed to manually upload the code for deployment and configure Elastic Beanstalk in the AWS console. It was very easy to make mistakes when manually releasing the code to production, and it actually happened to me. In this exercise, the goal is to automate the deployment process in Jenkins.  
+
+
 ## SYSTEM DESIGN DIAGRAM
 <div align="center">
 	<img width="1471" alt="image" src="https://github.com/user-attachments/assets/2ccb9144-8a0b-4095-8cc7-cea682305023">
 
   </div> 
+  
 
 ## STEPS
 
@@ -20,11 +23,15 @@ Previously, we built and tested the application successfully in Jenkins, but we 
 	<img width="1406" alt="Jnkins run" src="https://github.com/user-attachments/assets/ac3ff40d-25d4-4922-8fd5-e31e470fd5c2">
 	
 	</div> 
+
+ 
 4. Create a BASH script called "system_resources_test.sh" that checks for system resources (can be memory, cpu, disk, all of the above and/or more).  and push it to the GH repo. IMPORTANT: make sure you use conditional statements and exit codes (0 or 1) if any resource exceeds a certain threshold.  
     <div align="center">
 	  <img width="580" alt="exit 1 should be memoery exceed the thd" src="https://github.com/user-attachments/assets/e183c9a2-86b8-4b4d-b2ec-2eaf4c92255e">
 
 	</div>  
+
+ 
  	CPU load is defined as the number of processes using or waiting to use one core at a single point in time.  
     System resources can greatly affect application performance. It is crucial to monitor storage, memory and CPU.  
     The resource utilization need some command to check and a liitle calculation.    
@@ -40,6 +47,7 @@ Previously, we built and tested the application successfully in Jenkins, but we 
 	    <img width="853" alt="cpu usage and idle" src="https://github.com/user-attachments/assets/5e3e6c4b-47d8-4d67-9ece-8caf2d8d4990">
 
 	</div> 
+ 
    
     c. To get memory usage, we can use the `free` command. The free command provides multiple metrics for memory. In this case, I’ve selected total memory and used memory; the quotient represents the percentage of memory usage.
 	<div align="center">
@@ -48,6 +56,7 @@ Previously, we built and tested the application successfully in Jenkins, but we 
 
 
 	</div>
+ 
    
     d. To get disk usage, we can use the `df` command, with `df /` providing the disk usage of the root directory.
 	<div align="center">
@@ -57,6 +66,7 @@ Previously, we built and tested the application successfully in Jenkins, but we 
 
 
 	</div>
+ 
    
     e. I initially set the threshold for each usage to 65 percent, which is a normal threshold for monitoring the system. If any of these exceed the threshold, the process will exit with code 1 and display an error message to handle errors. In this CI/CD pipeline, the exit code is used for error detection, if certain failure conditions are met, the build can be stopped, allowing developers to debug or take other actions depending on the exit code before releasing the product.
 	<div align="center">
@@ -70,6 +80,7 @@ Previously, we built and tested the application successfully in Jenkins, but we 
 
 	
 	</div> 
+ 
 
 7. Back in the Jenkins Server Terminal- Install AWS CLI on the Jenkins Server
 	<div align="center">
@@ -95,6 +106,8 @@ To run the application, we can create a virtual environment to isolate dependenc
 
 	
 	</div> 
+
+ 
 10. Configure AWS CLI
 
 
@@ -109,12 +122,14 @@ In previous experiences, I configured the deployment environment through the Ela
 	<div align="center">
 		<img width="1482" alt="venv running" src="https://github.com/user-attachments/assets/0bb87612-bca2-455c-a786-77bf35185918">
 	<img width="1137" alt="environment run" src="https://github.com/user-attachments/assets/43d40ef2-6706-40c8-91bf-d05a1bf6e636">
-	</div> 
+	</div>   
+
 
 13. Done
 	<div align="center">
 		<img width="1920" alt="done" src="https://github.com/user-attachments/assets/a491f353-fd15-4776-83c8-b169b21a906d">
 	</div>
+
 
 ## TROUBLESHOOTING
 1. I am experiencing high memory utilization during the build process in Jenkins. While building the application, I encountered multiple failures due to this high memory usage. I initially set the memory usage threshold to 65%, but I continued to face failures, which prompted me to increase the threshold incrementally. Eventually, I reached 95%, which I think is a bad signal.
@@ -130,20 +145,25 @@ Several factors could cause this problem:
 * Jenkins is running on this server and needs to clone or pull from GitHub, which consumes memory.
 * I am also using this server as a local storage solution to store and process files, which further consumes memory and disk space.
 * This being solved by increasing the threshold for memory usage. 
-2. I've also have servral tries for calculation the cpu usage, at the first time I tried to split the line using cammand `grep -P '(....|...) id,'`; when the idle cpu is 100%, it cannot match this pattern. Then I tried the current way to get the cpu utilization.
+2. I've also have servral tries to calculate the cpu usage. At the first time, I tried to split the line using cammand `grep -P '(....|...) id,'`; however, when the idle cpu is 100%, it cannot match this pattern. Then I tried the current way to get the cpu utilization.
 	<div align="center">
 		<img width="1030" alt="troubleshooting cpu calculating" src="https://github.com/user-attachments/assets/fa5c3073-bf26-4034-97f9-4ff89d02dffc">
 	
 	</div>
 
+
 ## OPTIMIZATION
   ### How is using a deploy stage in the CICD pipeline able to increase efficiency of the business?   
   * By using the deploy stage, we can now configure the pipeline satges by telling the Jenkins to create a Elastic Beanstalk environment and it can deploy automatically. Reduced the marketing time for production.
   * Continuous delivery also improves the user experience by reducing maintenance time.
+  * Reduce the error while deploy manually.
 
     
 ### What issues, if any, can you think of that might come with automating source code to a production environment? How would you address/resolve this?  
   * It is possible to have deployment failures even through automating the source code. As in my working, if the Jenkinsfile has some issues with the configuration, such as using the duplicate environment name, will cause deployment failure. The solution would be using proper error handling.
+  * Automating the source code to a production environment will increase the complexity of debugging due to cross platform integration. To solve:
+    * Maintain Clear Documentation
+    * Enhance error handling
 
 
 ## CONCLUSION
